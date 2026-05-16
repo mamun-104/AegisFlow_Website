@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AegisFlow | Secure AI Gateway</title>
+<style>
+  :root {
+    --teal:#0097a7;
+    --teal-dark:#007684;
+    --ink:#101828;
+    --muted:#667085;
+    --line:#d0d5dd;
+    --danger:#b42318;
+    --danger-bg:#fff1f0;
+    --safe:#027a48;
+    --safe-bg:#ecfdf3;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; font-family:Inter, Arial, Helvetica, sans-serif; }
+  body { background:white; color:var(--ink); }
+  header { position:sticky; top:0; z-index:10; background:rgba(255,255,255,.94); border-bottom:1px solid var(--line); }
+  .nav { max-width:1180px; margin:auto; padding:16px 24px; display:flex; justify-content:space-between; align-items:center; }
+  .logo { display:flex; align-items:center; gap:12px; font-weight:800; }
+  .logo img { height:42px; width:auto; }
+  .nav a { color:var(--muted); text-decoration:none; margin-left:22px; font-weight:700; font-size:14px; }
+  .btn { background:var(--teal); color:white !important; padding:10px 16px; border-radius:999px; }
+  .hero { background:linear-gradient(135deg,#f7fbfc 0%,#eef4f5 100%); padding:76px 24px 54px; }
+  .hero-inner { max-width:1180px; margin:auto; display:grid; grid-template-columns:1.05fr .95fr; gap:44px; align-items:center; }
+  .eyebrow { display:inline-block; background:#e5f7f9; color:var(--teal-dark); padding:8px 14px; border-radius:999px; font-weight:800; margin-bottom:18px; }
+  h1 { font-size:54px; line-height:1.02; letter-spacing:-1.7px; margin-bottom:18px; }
+  .hero p { font-size:20px; line-height:1.55; color:#344054; margin-bottom:26px; }
+  .hero-card { background:white; border:1px solid var(--line); border-radius:26px; padding:26px; box-shadow:0 24px 60px rgba(16,24,40,.10); }
+  .prompt { background:#0f172a; color:white; border-radius:18px; padding:20px; line-height:1.65; font-size:15px; }
+  .risk { color:#ffb4ab; font-weight:900; }
+  .safe { color:#a7f3d0; font-weight:900; }
+  .tag-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+  .tag { background:#f2f4f7; color:#344054; border:1px solid var(--line); padding:9px 12px; border-radius:999px; font-weight:800; font-size:13px; }
+  section { padding:64px 24px; }
+  .wrap { max-width:1180px; margin:auto; }
+  .section-title { text-align:center; font-size:36px; margin-bottom:14px; }
+  .section-sub { max-width:780px; margin:0 auto 34px; color:var(--muted); font-size:18px; line-height:1.6; text-align:center; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .card { background:white; border:1px solid var(--line); border-radius:22px; padding:24px; box-shadow:0 12px 30px rgba(16,24,40,.06); }
+  .card h3 { color:var(--teal-dark); font-size:22px; margin-bottom:10px; }
+  .card p { color:#475467; line-height:1.55; }
+  .demo { background:#f8f9fb; }
+  .flow { display:grid; grid-template-columns:1fr 70px 1.15fr 70px 1fr; align-items:center; gap:10px; }
+  .demo-box { min-height:260px; border:2px solid var(--line); border-radius:22px; background:white; padding:22px; position:relative; overflow:hidden; }
+  .demo-box h3 { color:#344054; margin-bottom:14px; font-size:22px; }
+  .arrow { text-align:center; font-size:46px; color:var(--teal); font-weight:900; }
+  .line { opacity:0; transform:translateY(8px); animation:appear .7s ease forwards; line-height:1.8; }
+  .line:nth-child(2) { animation-delay:.3s; } .line:nth-child(3) { animation-delay:.8s; } .line:nth-child(4) { animation-delay:1.3s; } .line:nth-child(5) { animation-delay:1.8s; }
+  .scan { position:absolute; left:22px; right:22px; top:72px; height:5px; border-radius:999px; background:var(--teal); opacity:0; animation:scan 2.2s ease 2.2s forwards; }
+  .step { opacity:0; background:#f4feff; border:1px solid #b8dfe5; border-radius:14px; padding:12px; margin-bottom:11px; color:var(--teal-dark); font-weight:900; animation:appear .6s ease forwards; }
+  .step:nth-child(3) { animation-delay:2.5s; } .step:nth-child(4) { animation-delay:3.1s; } .step:nth-child(5) { animation-delay:3.7s; } .step:nth-child(6) { animation-delay:4.3s; }
+  .result { opacity:0; animation:appear .8s ease 4.9s forwards; line-height:1.8; }
+  @keyframes appear { to { opacity:1; transform:translateY(0); } }
+  @keyframes scan { 0% { opacity:1; transform:translateY(0); } 50% { opacity:1; transform:translateY(90px); } 100% { opacity:0; transform:translateY(150px); } }
+  .try { display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start; }
+  textarea { width:100%; min-height:220px; padding:18px; border-radius:18px; border:1.5px solid var(--line); font-size:16px; line-height:1.55; resize:vertical; }
+  button { border:0; background:var(--teal); color:white; padding:14px 18px; border-radius:14px; font-weight:900; margin-top:12px; cursor:pointer; }
+  .output { background:#fff; border:1.5px solid var(--line); border-radius:18px; padding:18px; min-height:220px; white-space:pre-wrap; line-height:1.6; }
+  .gdpr { margin-top:16px; border-left:5px solid var(--danger); background:var(--danger-bg); padding:16px; border-radius:14px; color:#7a271a; line-height:1.55; }
+  .ok { border-left-color:var(--safe); background:var(--safe-bg); color:#05603a; }
+  footer { background:#101828; color:white; padding:34px 24px; text-align:center; }
+  footer p { color:#d0d5dd; margin-top:8px; }
+  @media(max-width:900px) { .hero-inner,.try,.grid3,.flow { grid-template-columns:1fr; } .arrow { transform:rotate(90deg); } h1 { font-size:40px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="logo"><img src="/mnt/data/651773912_2836115093391311_4140970310291394129_n.png" alt="AegisFlow logo"><strong>Secure AI Gateway</strong></div>
+    <nav><a href="#problem">Problem</a><a href="#solution">Solution</a><a href="#demo">Demo</a><a class="btn" href="#try">Try it</a></nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <span class="eyebrow">For UK SMEs and institutions</span>
+        <h1>Adopt AI safely without exposing sensitive data.</h1>
+        <p>AegisFlow is a secure, purpose-built AI gateway that sits between users and public AI tools such as ChatGPT, Copilot and Gemini. It helps prevent data leakage, prompt injection risks and compliance gaps before prompts leave the organisation.</p>
+        <div class="tag-row"><span class="tag">Pre-egress protection</span><span class="tag">UK GDPR aligned</span><span class="tag">Plug-and-play</span><span class="tag">Multi-AI governance</span></div>
+      </div>
+      <div class="hero-card">
+        <div class="prompt">Before AegisFlow:<br>“Summarise this contract for <span class="risk">John Smith</span>. Include account <span class="risk">12345678</span> and our confidential plan <span class="risk">Project Orion</span>.”<br><br>After AegisFlow:<br>“Summarise this contract for <span class="safe">[CLIENT]</span>. Include account <span class="safe">[REDACTED]</span> and confidential plan <span class="safe">[REDACTED]</span>.”</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="problem">
+    <div class="wrap">
+      <h2 class="section-title">The current problem</h2>
+      <p class="section-sub">Employees are already using AI tools to write, analyse and automate work. The risk is that client data, intellectual property and confidential business information can be pasted into public AI systems without enough control.</p>
+      <div class="grid3">
+        <div class="card"><h3>Data leakage</h3><p>PII, financial details, client records, code and internal strategy may be shared in prompts or uploaded files.</p></div>
+        <div class="card"><h3>Adversarial risks</h3><p>Prompt injection and unsafe instructions can manipulate AI workflows or expose confidential information.</p></div>
+        <div class="card"><h3>Compliance pressure</h3><p>SMEs need evidence that AI use is controlled, especially when working with regulated clients and supply chains.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="solution" class="demo">
+    <div class="wrap">
+      <h2 class="section-title">How AegisFlow aims to solve it</h2>
+      <p class="section-sub">AegisFlow intercepts prompts at the point of interaction, detects risky content, redacts sensitive information and creates an audit trail before the prompt reaches external AI systems.</p>
+      <div class="grid3">
+        <div class="card"><h3>Inspect</h3><p>Detects PII, IP, confidential data and unsafe prompt behaviour.</p></div>
+        <div class="card"><h3>Sanitise</h3><p>Masks or removes risky information before it leaves the organisation.</p></div>
+        <div class="card"><h3>Govern</h3><p>Applies policies and records evidence for audit and compliance.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo">
+    <div class="wrap">
+      <h2 class="section-title">Animated real-life example</h2>
+      <p class="section-sub">A finance employee uses AI to summarise client information. AegisFlow protects the request before it reaches the AI tool.</p>
+      <div class="flow">
+        <div class="demo-box"><h3>Employee prompt</h3><p class="line">Summarise Q3 client report.</p><p class="line">Client: <span style="color:var(--danger);font-weight:900">Apex Holdings Ltd</span></p><p class="line">Director: <span style="color:var(--danger);font-weight:900">James Parker</span></p><p class="line">Account: <span style="color:var(--danger);font-weight:900">40-23-15 / 12345678</span></p></div>
+        <div class="arrow">→</div>
+        <div class="demo-box"><h3>AegisFlow processing</h3><div class="scan"></div><div class="step">Inspect prompt</div><div class="step">Detect PII and financial data</div><div class="step">Redact sensitive content</div><div class="step">Create compliance log</div></div>
+        <div class="arrow">→</div>
+        <div class="demo-box"><h3>Safe AI prompt</h3><div class="result">Summarise Q3 client report.<br><br>Client: <span style="color:var(--safe);font-weight:900">[CLIENT]</span><br>Director: <span style="color:var(--safe);font-weight:900">[REDACTED]</span><br>Account: <span style="color:var(--safe);font-weight:900">[REDACTED]</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="try" class="demo">
+    <div class="wrap">
+      <h2 class="section-title">Try the AegisFlow prompt checker</h2>
+      <p class="section-sub">Paste a sample prompt below. This simple demo shows how AegisFlow would identify and redact risky information before AI processing.</p>
+      <div class="try">
+        <div>
+          <textarea id="input">Please analyse the Q3 finances for Apex Holdings Ltd. Contact James Parker at james.parker@apexholdings.co.uk. Account number 12345678. Include confidential strategy Project Orion and client pricing plan.</textarea>
+          <button onclick="processPrompt()">Process through AegisFlow</button>
+        </div>
+        <div>
+          <div id="processed" class="output">Your safe prompt will appear here.</div>
+          <div id="gdpr" class="gdpr">Initial assessment: The original prompt may not follow UK GDPR principles because it includes identifiable personal information, client details and confidential business data without protection.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <strong>AegisFlow</strong>
+  <p>Secure AI adoption for SMEs and institutions. Demo for concept validation only.</p>
+</footer>
+
+<script>
+function processPrompt() {
+  const input = document.getElementById('input').value;
+  let out = input;
+  out = out.split('Apex Holdings Ltd').join('[CLIENT REDACTED]');
+  out = out.split('James Parker').join('[PERSON REDACTED]');
+  out = out.split('james.parker@apexholdings.co.uk').join('[EMAIL REDACTED]');
+  out = out.split('12345678').join('[NUMBER REDACTED]');
+  out = out.split('Project Orion').join('[PROJECT REDACTED]');
+  out = out.split('client pricing plan').join('[COMMERCIAL DETAIL REDACTED]');
+  document.getElementById('processed').textContent = out;
+  document.getElementById('gdpr').className = 'gdpr ok';
+  document.getElementById('gdpr').textContent = 'AegisFlow outcome: Sensitive personal, client and business data has been redacted before the prompt is shared with an external AI tool. A compliance log would also be generated for audit evidence.';
+}
+</script>
+</body>
+</html>
